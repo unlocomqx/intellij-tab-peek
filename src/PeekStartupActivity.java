@@ -1,4 +1,5 @@
 import com.intellij.openapi.application.ApplicationManager;
+import com.intellij.openapi.editor.impl.EditorComponentImpl;
 import com.intellij.openapi.project.DumbAware;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.startup.StartupActivity;
@@ -29,18 +30,26 @@ class MouseEventListener implements AWTEventListener {
     private final HashMap<JBEditorTabs, TabInfo> originalTab;
     private final HashMap<JBEditorTabs, Boolean> tabsListeners;
     private final HashMap<JBEditorTabs, Boolean> tabsTrigger;
-    private final HashMap<JBEditorTabs, Timer> timers;
-    private final HashMap<JBEditorTabs, TimerTask> timerTasks;
+
+    private final HashMap<JBEditorTabs, Timer> switchTimers;
+    private final HashMap<JBEditorTabs, TimerTask> switchTimerTasks;
+
+    private final HashMap<JBEditorTabs, Timer> restoreTimers;
+    private final HashMap<JBEditorTabs, TimerTask> restoreTimerTasks;
 
     MouseEventListener() {
         originalTab = new HashMap<>();
         tabsListeners = new HashMap<>();
         tabsTrigger = new HashMap<>();
-        timers = new HashMap<>();
-        timerTasks = new HashMap<>();
+        switchTimers = new HashMap<>();
+        switchTimerTasks = new HashMap<>();
+        restoreTimers = new HashMap<>();
+        restoreTimerTasks = new HashMap<>();
     }
 
-    private void scheduleRestoreTask(JBEditorTabs tabs, TabInfo info) {
+    private void scheduleSwitchTask(JBEditorTabs tabs, TabInfo info) {
+        cancelSwitchTask(tabs);
+
         Timer timer = new Timer();
         TimerTask timerTask = new TimerTask() {
             @Override
@@ -48,14 +57,43 @@ class MouseEventListener implements AWTEventListener {
                 ApplicationManager.getApplication().invokeLater(() -> selectTab(tabs, info));
             }
         };
-        timers.put(tabs, timer);
-        timerTasks.put(tabs, timerTask);
-        timer.schedule(timerTask, 1000);
+
+        switchTimers.put(tabs, timer);
+        switchTimerTasks.put(tabs, timerTask);
+        timer.schedule(timerTask, 100);
+    }
+
+    private void cancelSwitchTask(JBEditorTabs tabs) {
+        Timer timer = switchTimers.get(tabs);
+        TimerTask timerTask = switchTimerTasks.get(tabs);
+
+        if (timer != null) {
+            timer.cancel();
+            timer.purge();
+        }
+        if (timerTask != null) {
+            timerTask.cancel();
+        }
+    }
+
+    private void scheduleRestoreTask(JBEditorTabs tabs, TabInfo info) {
+        cancelRestoreTask(tabs);
+
+        Timer timer = new Timer();
+        TimerTask timerTask = new TimerTask() {
+            @Override
+            public void run() {
+                ApplicationManager.getApplication().invokeLater(() -> selectTab(tabs, info));
+            }
+        };
+        restoreTimers.put(tabs, timer);
+        restoreTimerTasks.put(tabs, timerTask);
+        timer.schedule(timerTask, 500);
     }
 
     private void cancelRestoreTask(JBEditorTabs tabs) {
-        Timer timer = timers.get(tabs);
-        TimerTask timerTask = timerTasks.get(tabs);
+        Timer timer = restoreTimers.get(tabs);
+        TimerTask timerTask = restoreTimerTasks.get(tabs);
 
         if (timer != null) {
             timer.cancel();
@@ -76,7 +114,18 @@ class MouseEventListener implements AWTEventListener {
                     Container parent = label.getParent();
                     if (parent instanceof JBEditorTabs) {
                         JBEditorTabs tabs = (JBEditorTabs) parent;
-                        originalTab.put(tabs, tabs.getSelectedInfo());
+                        saveCurrentTab(tabs);
+                    }
+                }
+
+                if (mouseEvent.getSource() instanceof EditorComponentImpl) {
+                    // if the editor is clicked, persist current tab
+                    EditorComponentImpl editor = (EditorComponentImpl) mouseEvent.getSource();
+                    JBEditorTabs tabs = getEditorTabbedContainer(editor);
+                    if (tabs != null) {
+                        cancelRestoreTask(tabs);
+                        cancelSwitchTask(tabs);
+                        saveCurrentTab(tabs);
                     }
                 }
             }
@@ -88,26 +137,18 @@ class MouseEventListener implements AWTEventListener {
                     if (parent instanceof JBEditorTabs) {
                         JBEditorTabs tabs = (JBEditorTabs) parent;
                         if (tabsListeners.get(tabs) == null) {
-                            tabs.addListener(new TabsListener() {
-                                @Override
-                                public void selectionChanged(TabInfo oldSelection, TabInfo newSelection) {
-                                    if (tabsTrigger.get(tabs) == null || !tabsTrigger.get(tabs)) {
-                                        originalTab.put(tabs, newSelection);
-                                    }
-                                }
-                            });
-                            tabsListeners.put(tabs, true);
+                            addTabsListener(tabs);
                         }
 
-                        TabInfo info = label.getInfo();
-                        tabsTrigger.put(tabs, true);
                         if (originalTab.get(tabs) == null) {
-                            originalTab.put(tabs, tabs.getSelectedInfo());
+                            saveCurrentTab(tabs);
                         }
 
                         cancelRestoreTask(tabs);
+                        cancelSwitchTask(tabs);
 
-                        selectTab(tabs, info);
+                        TabInfo info = label.getInfo();
+                        scheduleSwitchTask(tabs, info);
                     }
                 }
             }
@@ -118,6 +159,9 @@ class MouseEventListener implements AWTEventListener {
                     Container parent = label.getParent();
                     if (parent instanceof JBEditorTabs) {
                         JBEditorTabs tabs = (JBEditorTabs) parent;
+
+                        cancelSwitchTask(tabs);
+
                         TabInfo originalTabInfo = originalTab.get(tabs);
                         if (originalTabInfo != null) {
                             scheduleRestoreTask(tabs, originalTabInfo);
@@ -126,6 +170,36 @@ class MouseEventListener implements AWTEventListener {
                 }
             }
         }
+    }
+
+    private void saveCurrentTab(JBEditorTabs tabs) {
+        saveSelectedTab(tabs, tabs.getSelectedInfo());
+    }
+
+    private JBEditorTabs getEditorTabbedContainer(EditorComponentImpl editor) {
+        Container parent = editor;
+
+        do {
+            parent = parent.getParent();
+        } while (parent != null && !(parent instanceof JBEditorTabs));
+
+        return parent != null ? (JBEditorTabs) parent: null;
+    }
+
+    private void saveSelectedTab(JBEditorTabs tabs, TabInfo tabInfo) {
+        originalTab.put(tabs, tabInfo);
+    }
+
+    private void addTabsListener(JBEditorTabs tabs) {
+        tabs.addListener(new TabsListener() {
+            @Override
+            public void selectionChanged(TabInfo oldSelection, TabInfo newSelection) {
+                if (tabsTrigger.get(tabs) == null || !tabsTrigger.get(tabs)) {
+                    saveSelectedTab(tabs, newSelection);
+                }
+            }
+        });
+        tabsListeners.put(tabs, true);
     }
 
     private void selectTab(JBEditorTabs tabs, TabInfo info) {

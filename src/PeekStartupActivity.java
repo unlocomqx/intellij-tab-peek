@@ -23,14 +23,14 @@ public class PeekStartupActivity implements StartupActivity, DumbAware {
 
 class MouseEventListener implements AWTEventListener {
 
-    private HashMap<JBEditorTabs, TabInfo> selectedTab;
-    private HashMap<JBEditorTabs, Boolean> tabsListeners;
-    private HashMap<JBEditorTabs, Boolean> tabsTrigger;
+    private final HashMap<JBEditorTabs, TabInfo> selectedTab;
+    private final HashMap<JBEditorTabs, Boolean> tabsListeners;
+    private final HashMap<JBEditorTabs, Boolean> tabsTrigger;
 
     MouseEventListener() {
-        selectedTab = new HashMap();
-        tabsListeners = new HashMap();
-        tabsTrigger = new HashMap();
+        selectedTab = new HashMap<>();
+        tabsListeners = new HashMap<>();
+        tabsTrigger = new HashMap<>();
     }
 
     @Override
@@ -63,6 +63,7 @@ class MouseEventListener implements AWTEventListener {
                                     }
                                 }
                             });
+                            tabsListeners.put(tabs, true);
                         }
 
                         TabInfo info = label.getInfo();

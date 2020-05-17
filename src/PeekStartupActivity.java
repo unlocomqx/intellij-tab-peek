@@ -204,7 +204,7 @@ class MouseEventListener implements AWTEventListener {
 
     private void selectTab(JBEditorTabs tabs, TabInfo info) {
         tabsTrigger.put(tabs, true);
-        tabs.select(info, false);
+        tabs.select(info, true);
         tabsTrigger.put(tabs, false);
     }
 }

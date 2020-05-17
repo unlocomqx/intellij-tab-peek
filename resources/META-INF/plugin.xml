@@ -1,8 +1,8 @@
 <idea-plugin>
   <id>net.prestalife.tabpeek</id>
   <name>Tab Peek</name>
-  <version>1.01</version>
-  <vendor email="tunisoft.solutions@gmail.com" url="http://docs.prestalife.net">PrestaLife</vendor>
+  <version>1.02</version>
+  <vendor email="tunisoft.solutions@gmail.com" url="https://github.com/unlocomqx/intellij-tab-peek">PrestaLife</vendor>
 
   <description><![CDATA[
       <p>View tab contents using mouse hover, restore initial tab on mouse leave</p>
@@ -31,9 +31,5 @@
   <actions>
     <!-- Add your actions here -->
   </actions>
-
-  <applicationListeners>
-    <listener class="PeekTabsListener" topic="com.intellij.ui.tabs.TabsListener"/>
-  </applicationListeners>
 
 </idea-plugin>

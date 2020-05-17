@@ -8,7 +8,6 @@
       <p>View tab contents using mouse hover</p>
       <ul>
         <li>Show tab contents on hover</li>
-        <li>Configure a hover delay</li>
         <li>Restore initial tab on mouse out</li>
       </ul>
     ]]></description>
@@ -17,7 +16,6 @@
       Initial version 1.0
       <ul>
         <li>Show tab contents on hover</li>
-        <li>Configure a hover delay</li>
         <li>Restore initial tab on mouse out</li>
       </ul>
     ]]>

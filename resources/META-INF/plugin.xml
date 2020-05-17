@@ -5,11 +5,7 @@
   <vendor email="tunisoft.solutions@gmail.com" url="http://docs.prestalife.net">PrestaLife</vendor>
 
   <description><![CDATA[
-      <p>View tab contents using mouse hover</p>
-      <ul>
-        <li>Show tab contents on hover</li>
-        <li>Restore initial tab on mouse out</li>
-      </ul>
+      <p>View tab contents using mouse hover, restore initial tab on mouse leave</p>
     ]]></description>
 
   <change-notes><![CDATA[

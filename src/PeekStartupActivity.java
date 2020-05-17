@@ -83,8 +83,6 @@ class MouseEventListener implements AWTEventListener {
                     Container parent = label.getParent();
                     if (parent instanceof JBEditorTabs) {
                         JBEditorTabs tabs = (JBEditorTabs) parent;
-                        TabInfo info = label.getInfo();
-
                         TabInfo tabInfo = selectedTab.get(tabs);
                         if (tabInfo != null) {
                             tabsTrigger.put(tabs, true);

@@ -1,7 +1,7 @@
 <idea-plugin>
     <id>net.prestalife.tabpeek</id>
     <name>Tab Peek</name>
-    <version>1.1.1</version>
+    <version>1.2</version>
     <vendor email="tunisoft.solutions@gmail.com" url="https://github.com/unlocomqx/intellij-tab-peek">PrestaLife
     </vendor>
 
@@ -10,6 +10,11 @@
     ]]></description>
 
     <change-notes><![CDATA[
+      Version 1.2
+      <ul>
+        <li>Feature: Customize switch and restore delays</li>
+      </ul>
+
       Initial version 1.0
       <ul>
         <li>Show tab contents on hover</li>

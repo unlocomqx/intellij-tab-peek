@@ -18,8 +18,8 @@ You can install from the [official Intellij Plugins website](https://plugins.jet
     <li>Hover over tab's header to view tab's contents</li>
     <li>Leave tab's header to restore the initial tab</li>
     <li>Click on tab's header or the editor area to persist the viewed tab</li>
+    <li>Customize hover and restore delays</li>
 </ul>
 
 ## Contributing
-The next important feature is to make the hover delay customizable, this requires displaying a form to the user.  
-Feel free to submit a PR if you have experience with Intellij dialogs and plugin settings!
+Feel free to submit a PR if you would like to have a new feature in this plugin!

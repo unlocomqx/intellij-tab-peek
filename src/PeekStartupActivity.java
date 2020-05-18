@@ -83,7 +83,7 @@ class MouseEventListener implements AWTEventListener {
         TimerTask timerTask = new TimerTask() {
             @Override
             public void run() {
-                ApplicationManager.getApplication().invokeLater(() -> selectTab(tabs, info));
+                ApplicationManager.getApplication().invokeLater(() -> selectTab(tabs, info, true));
             }
         };
         restoreTimers.put(tabs, timer);
@@ -204,7 +204,13 @@ class MouseEventListener implements AWTEventListener {
 
     private void selectTab(JBEditorTabs tabs, TabInfo info) {
         tabsTrigger.put(tabs, true);
-        tabs.select(info, true);
+        tabs.select(info, false);
+        tabsTrigger.put(tabs, false);
+    }
+
+    private void selectTab(JBEditorTabs tabs, TabInfo info, Boolean requestFocus) {
+        tabsTrigger.put(tabs, true);
+        tabs.select(info, requestFocus);
         tabsTrigger.put(tabs, false);
     }
 }

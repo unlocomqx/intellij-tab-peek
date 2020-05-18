@@ -1,7 +1,7 @@
 <idea-plugin>
   <id>net.prestalife.tabpeek</id>
   <name>Tab Peek</name>
-  <version>1.1</version>
+  <version>1.1.1</version>
   <vendor email="tunisoft.solutions@gmail.com" url="https://github.com/unlocomqx/intellij-tab-peek">PrestaLife</vendor>
 
   <description><![CDATA[

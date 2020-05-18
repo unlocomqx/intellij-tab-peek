@@ -27,6 +27,8 @@ public class PeekStartupActivity implements StartupActivity, DumbAware {
 
 class MouseEventListener implements AWTEventListener {
 
+    private final TabPeekConfig mConfig;
+
     private final HashMap<JBEditorTabs, TabInfo> originalTab;
     private final HashMap<JBEditorTabs, Boolean> tabsListeners;
     private final HashMap<JBEditorTabs, Boolean> tabsTrigger;
@@ -38,6 +40,7 @@ class MouseEventListener implements AWTEventListener {
     private final HashMap<JBEditorTabs, TimerTask> restoreTimerTasks;
 
     MouseEventListener() {
+        mConfig = TabPeekConfig.getInstance();
         originalTab = new HashMap<>();
         tabsListeners = new HashMap<>();
         tabsTrigger = new HashMap<>();
@@ -60,7 +63,7 @@ class MouseEventListener implements AWTEventListener {
 
         switchTimers.put(tabs, timer);
         switchTimerTasks.put(tabs, timerTask);
-        timer.schedule(timerTask, 333);
+        timer.schedule(timerTask, mConfig.getSwitchDelay());
     }
 
     private void cancelSwitchTask(JBEditorTabs tabs) {
@@ -88,7 +91,7 @@ class MouseEventListener implements AWTEventListener {
         };
         restoreTimers.put(tabs, timer);
         restoreTimerTasks.put(tabs, timerTask);
-        timer.schedule(timerTask, 500);
+        timer.schedule(timerTask, mConfig.getRestoreDelay());
     }
 
     private void cancelRestoreTask(JBEditorTabs tabs) {
@@ -183,7 +186,7 @@ class MouseEventListener implements AWTEventListener {
             parent = parent.getParent();
         } while (parent != null && !(parent instanceof JBEditorTabs));
 
-        return parent != null ? (JBEditorTabs) parent: null;
+        return parent != null ? (JBEditorTabs) parent : null;
     }
 
     private void saveSelectedTab(JBEditorTabs tabs, TabInfo tabInfo) {

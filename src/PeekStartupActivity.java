@@ -60,7 +60,7 @@ class MouseEventListener implements AWTEventListener {
 
         switchTimers.put(tabs, timer);
         switchTimerTasks.put(tabs, timerTask);
-        timer.schedule(timerTask, 100);
+        timer.schedule(timerTask, 333);
     }
 
     private void cancelSwitchTask(JBEditorTabs tabs) {

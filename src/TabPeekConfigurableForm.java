@@ -6,9 +6,12 @@ import javax.swing.*;
 import java.awt.*;
 
 public class TabPeekConfigurableForm {
-    private JTextField switchDelay;
     public JPanel rootPanel;
+
+    private JTextField switchDelay;
     private JTextField restoreDelay;
+
+    private TabPeekConfig mConfig;
 
     private void createUIComponents() {
         // TODO: place custom component creation code here
@@ -63,11 +66,32 @@ public class TabPeekConfigurableForm {
         rootPanel.add(label4, new GridConstraints(0, 2, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
     }
 
-    /**
-     * @noinspection ALL
-     */
     public JComponent $$$getRootComponent$$$() {
         return rootPanel;
     }
 
+    public boolean isModified() {
+        boolean modified = false;
+        //noinspection ConstantConditions
+        modified |= !switchDelay.getText().equals(String.valueOf(mConfig.getSwitchDelay()));
+        modified |= !restoreDelay.getText().equals(String.valueOf(mConfig.getRestoreDelay()));
+        return modified;
+    }
+
+    public void createUI() {
+        mConfig = TabPeekConfig.getInstance();
+        if (mConfig != null) {
+            switchDelay.setText(String.valueOf(mConfig.getSwitchDelay()));
+            restoreDelay.setText(String.valueOf(mConfig.getRestoreDelay()));
+        }
+    }
+
+    public void apply() {
+        mConfig.setSwitchDelay(Integer.parseInt(switchDelay.getText()));
+        mConfig.setRestoreDelay(Integer.parseInt(restoreDelay.getText()));
+    }
+
+    public void reset() {
+
+    }
 }

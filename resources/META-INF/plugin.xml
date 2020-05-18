@@ -29,6 +29,7 @@
         <postStartupActivity implementation="PeekStartupActivity" order="first"/>
         <applicationConfigurable groupId="appearance" instance="TabPeekConfigurable"
                                  id="preferences.TabPeekConfigurable" displayName="Tab Peek Settings"/>
+        <applicationService serviceImplementation="TabPeekConfig"/>
     </extensions>
 
     <actions>

@@ -1,4 +1,3 @@
-import com.intellij.openapi.options.ConfigurationException;
 import com.intellij.openapi.options.SearchableConfigurable;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NotNull;
@@ -7,7 +6,7 @@ import org.jetbrains.annotations.Nullable;
 import javax.swing.*;
 
 public class TabPeekConfigurable implements SearchableConfigurable {
-    private TabPeekConfigurableForm myGUI;
+    private TabPeekConfigurableForm mGUI;
 
     @NotNull
     @Override
@@ -24,22 +23,28 @@ public class TabPeekConfigurable implements SearchableConfigurable {
     @Nullable
     @Override
     public JComponent createComponent() {
-        myGUI = new TabPeekConfigurableForm();
-        return myGUI.rootPanel;
+        mGUI = new TabPeekConfigurableForm();
+        mGUI.createUI();
+        return mGUI.rootPanel;
     }
 
     @Override
     public void disposeUIResources() {
-        myGUI = null;
+        mGUI = null;
     }
 
     @Override
     public boolean isModified() {
-        return false;
+        return mGUI.isModified();
     }
 
     @Override
-    public void apply() throws ConfigurationException {
+    public void apply() {
+        mGUI.apply();
+    }
 
+    @Override
+    public void reset() {
+        mGUI.reset();
     }
 }

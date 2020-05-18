@@ -1,35 +1,38 @@
 <idea-plugin>
-  <id>net.prestalife.tabpeek</id>
-  <name>Tab Peek</name>
-  <version>1.1.1</version>
-  <vendor email="tunisoft.solutions@gmail.com" url="https://github.com/unlocomqx/intellij-tab-peek">PrestaLife</vendor>
+    <id>net.prestalife.tabpeek</id>
+    <name>Tab Peek</name>
+    <version>1.1.1</version>
+    <vendor email="tunisoft.solutions@gmail.com" url="https://github.com/unlocomqx/intellij-tab-peek">PrestaLife
+    </vendor>
 
-  <description><![CDATA[
+    <description><![CDATA[
       <p>View tab contents using mouse hover, restore initial tab on mouse leave</p>
     ]]></description>
 
-  <change-notes><![CDATA[
+    <change-notes><![CDATA[
       Initial version 1.0
       <ul>
         <li>Show tab contents on hover</li>
         <li>Restore initial tab on mouse out</li>
       </ul>
     ]]>
-  </change-notes>
+    </change-notes>
 
-  <!-- please see https://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/build_number_ranges.html for description -->
-  <idea-version since-build="193.0"/>
+    <!-- please see https://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/build_number_ranges.html for description -->
+    <idea-version since-build="193.0"/>
 
-  <!-- please see https://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/plugin_compatibility.html
-       on how to target different products -->
-  <depends>com.intellij.modules.platform</depends>
+    <!-- please see https://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/plugin_compatibility.html
+         on how to target different products -->
+    <depends>com.intellij.modules.platform</depends>
 
-  <extensions defaultExtensionNs="com.intellij">
-    <postStartupActivity implementation="PeekStartupActivity" order="first"/>
-  </extensions>
+    <extensions defaultExtensionNs="com.intellij">
+        <postStartupActivity implementation="PeekStartupActivity" order="first"/>
+        <applicationConfigurable groupId="appearance" instance="TabPeekConfigurable"
+                                 id="preferences.TabPeekConfigurable" displayName="Tab Peek Settings"/>
+    </extensions>
 
-  <actions>
-    <!-- Add your actions here -->
-  </actions>
+    <actions>
+        <!-- Add your actions here -->
+    </actions>
 
 </idea-plugin>
